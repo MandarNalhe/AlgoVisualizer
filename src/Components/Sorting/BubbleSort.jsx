@@ -1,26 +1,107 @@
 import React, { useEffect, useState } from "react";
 import NavbarPages from "../Templates/NavbarPages";
 import "../../index.css";
+import gsap from "gsap";
 
 const BubbleSort = () => {
   const [array, setarray] = useState([3, 10, 60, 30, 5]);
   const [maxval, setmaxval] = useState(Math.max(...array));
   const [isSorting, setisSorting] = useState(false);
+  const [inc, setinc] = useState(true);
+  const [Steps, setSteps] = useState([]);
   console.log(maxval);
 
   const createRandomArray = () => {
     if (isSorting) return;
     let arr = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       arr.push(Math.floor(Math.random() * 100));
     }
     setarray(arr);
     setmaxval(Math.max(...array));
+    setSteps([]);
   };
 
-  const bubbleSrotVisualization = () => {};
+  const incresingbubbleSrotVisualization = async () => {
+    setisSorting(true);
+    const bars = document.querySelectorAll(".bars");
+    const sarr = [...array];
+    const newSteps = [];
 
-  useEffect(() => {}, [array, maxval]);
+    const updateSteps = (step) => {
+      newSteps.push(step);
+      setSteps([...newSteps]);
+      const stepList = document.querySelector(".step-list");
+      if (stepList) {
+        stepList.scrollTop = stepList.scrollHeight;
+      }
+    };
+
+    for (let i = 0; i < sarr.length - 1; i++) {
+      updateSteps(`${i + 1}th itreation`);
+      for (let j = 0; j < sarr.length - i - 1; j++) {
+        const bar1 = bars[j];
+        const bar2 = bars[j + 1];
+
+        bar1.style.backgroundColor = "red";
+        bar2.style.backgroundColor = "red";
+        updateSteps(`Comparing: ${sarr[j]} and ${sarr[j + 1]}`);
+        await delay(500);
+
+        if (sarr[j] > sarr[j + 1]) {
+          updateSteps(`Swapping: ${sarr[j]} and ${sarr[j + 1]}`);
+          bar1.style.backgroundColor = "green";
+          bar2.style.backgroundColor = "green";
+          gsap.to(bar1, { y: -20, duration: 0.2 });
+          gsap.to(bar2, { y: 20, duration: 0.2 });
+          await delay(500);
+          [sarr[j], sarr[j + 1]] = [sarr[j + 1], sarr[j]];
+          setarray([...sarr]);
+          gsap.to(bar1, { y: 0, duration: 0.2 });
+          gsap.to(bar2, { y: 0, duration: 0.2 });
+        }
+        bar1.style.backgroundColor = "#38BDF8";
+        bar2.style.backgroundColor = "#38BDF8";
+      }
+    }
+    setisSorting(false);
+  };
+
+  const decresingbubbleSrotVisualization = async () => {
+    setisSorting(true);
+    const bars = document.querySelectorAll(".bars");
+    const sarr = [...array];
+
+    for (let i = 0; i < sarr.length - 1; i++) {
+      for (let j = 0; j < sarr.length - i - 1; j++) {
+        const bar1 = bars[j];
+        const bar2 = bars[j + 1];
+
+        bar1.style.backgroundColor = "red";
+        bar2.style.backgroundColor = "red";
+        await delay(500);
+
+        if (sarr[j] < sarr[j + 1]) {
+          bar1.style.backgroundColor = "green";
+          bar2.style.backgroundColor = "green";
+          gsap.to(bar1, { y: -20, duration: 0.2 });
+          gsap.to(bar2, { y: 20, duration: 0.2 });
+          await delay(500);
+          [sarr[j], sarr[j + 1]] = [sarr[j + 1], sarr[j]];
+          setarray([...sarr]);
+          gsap.to(bar1, { y: 0, duration: 0.2 });
+          gsap.to(bar2, { y: 0, duration: 0.2 });
+        }
+        bar1.style.backgroundColor = "#38BDF8";
+        bar2.style.backgroundColor = "#38BDF8";
+      }
+    }
+    setisSorting(false);
+  };
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  // useEffect(() => {}, [array, maxval]);
 
   return (
     <main className="w-full flex flex-col">
@@ -153,8 +234,23 @@ const BubbleSort = () => {
                 Bubble sort
               </h1>
 
+              {/* //  */}
+
+              {/* sorting status  */}
+
+              <p className="absolute top-12 left-5 capitalize">
+                sorting order : {inc ? "increasing " : "decreasing"}
+              </p>
+
               {/* start button  */}
-              <button className="absolute px-10 pt-3 py-2 rounded-full heading border-black border-[1px] font-bold tracking-widest text-xl bottom-6 right-[13%]">
+              <button
+                onClick={
+                  inc
+                    ? () => incresingbubbleSrotVisualization()
+                    : () => decresingbubbleSrotVisualization()
+                }
+                className="absolute px-10 pt-3 py-2 rounded-full heading border-black border-[1px] font-bold tracking-widest text-xl bottom-6 right-[10%]"
+              >
                 Start
               </button>
               {/* // */}
@@ -203,10 +299,16 @@ const BubbleSort = () => {
               <div className="flex w-full flex-col items-center gap-6">
                 <h3 className="text-xl font-bold">Sorting Order</h3>
                 <div className="w-full flex justify-center gap-6">
-                  <button className="px-5 py-2  border-black border-[1px]">
+                  <button
+                    onClick={() => setinc(true)}
+                    className="px-5 py-2  border-black border-[1px]"
+                  >
                     Increseing Order
                   </button>
-                  <button className="px-5 py-2  border-black border-[1px]">
+                  <button
+                    onClick={() => setinc(false)}
+                    className="px-5 py-2  border-black border-[1px]"
+                  >
                     Decresing Order
                   </button>
                 </div>
@@ -217,7 +319,13 @@ const BubbleSort = () => {
             {/* right steps cont  */}
             <div className="h-full w-[50%] flex flex-col items-center justify-center gap-5 ">
               <h3 className="w-[85%] text-xl font-bold">Working Steps</h3>
-              <div className="steps flex flex-col w-[80%] h-[70%] border-black border-[1px] overflow-auto"></div>
+              <div className="steps step-list flex flex-col w-[80%] h-[70%] border-black border-[1px] px-3 overflow-auto">
+                {Steps.map((step, index) => (
+                  <div className="p-2" key={index}>
+                    {step}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
