@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import NavbarPages from "../Templates/NavbarPages";
 import "../../index.css";
 import gsap from "gsap";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { coy } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { vsDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 const BubbleSort = () => {
   const [array, setarray] = useState([3, 10, 60, 30, 5]);
@@ -71,17 +75,30 @@ const BubbleSort = () => {
     setisSorting(true);
     const bars = document.querySelectorAll(".bars");
     const sarr = [...array];
+    const newSteps = [];
+
+    const updateSteps = (step) => {
+      newSteps.push(step);
+      setSteps([...newSteps]);
+      const stepList = document.querySelector(".step-list");
+      if (stepList) {
+        stepList.scrollTop = stepList.scrollHeight;
+      }
+    };
 
     for (let i = 0; i < sarr.length - 1; i++) {
+      updateSteps(`${i + 1}th itreation`);
       for (let j = 0; j < sarr.length - i - 1; j++) {
         const bar1 = bars[j];
         const bar2 = bars[j + 1];
 
         bar1.style.backgroundColor = "red";
         bar2.style.backgroundColor = "red";
+        updateSteps(`Comparing: ${sarr[j]} and ${sarr[j + 1]}`);
         await delay(500);
 
         if (sarr[j] < sarr[j + 1]) {
+          updateSteps(`Swapping: ${sarr[j]} and ${sarr[j + 1]}`);
           bar1.style.backgroundColor = "green";
           bar2.style.backgroundColor = "green";
           gsap.to(bar1, { y: -20, duration: 0.2 });
@@ -300,13 +317,19 @@ const BubbleSort = () => {
                 <h3 className="text-xl font-bold">Sorting Order</h3>
                 <div className="w-full flex justify-center gap-6">
                   <button
-                    onClick={() => setinc(true)}
+                    onClick={() => {
+                      setSteps([]);
+                      setinc(true);
+                    }}
                     className="px-5 py-2  border-black border-[1px]"
                   >
                     Increseing Order
                   </button>
                   <button
-                    onClick={() => setinc(false)}
+                    onClick={() => {
+                      setSteps([]);
+                      setinc(false);
+                    }}
                     className="px-5 py-2  border-black border-[1px]"
                   >
                     Decresing Order
@@ -335,9 +358,9 @@ const BubbleSort = () => {
 
       {/* 3section  */}
 
-      <section className="flex w-full h-screen border-black border-b-[1px]">
+      <section className="flex w-full  border-black border-b-[1px]">
         {/* left cont  */}
-        <div className="flex h-full w-[25%] justify-center border-black border-r-[1px] ">
+        <div className="flex  w-[25%] justify-center border-black border-r-[1px] ">
           <div className="flex w-[80%] h-[20%]  gap-4 items-center justify-center ">
             {/* circle  */}
             <div className="rounded-full w-[22px] h-[16px]   border-black border-[1px]"></div>
@@ -347,7 +370,159 @@ const BubbleSort = () => {
 
         {/* //*/}
         {/* right cont  */}
-        <div className="flex flex-col w-[75%] h-full  "></div>
+        <div className="flex flex-col w-[75%] h-full px-10 pb-5 gap-5 ">
+          <h1 className="mt-14 text-3xl font-semibold">
+            Implementation of Bubble sort
+          </h1>
+
+          {/* / */}
+
+          {/* cpp  */}
+
+          <div className=" p-5 flex flex-col gap-5 ">
+            {/* language heading  */}
+            <li className="text-2xl">C++</li>
+            <pre className=" w-[80%] flex items-center ">
+              <SyntaxHighlighter
+                language="cpp"
+                style={vscDarkPlus}
+                customStyle={{
+                  backgroundColor: "black",
+                  height: "100%",
+                  width: "80%",
+                  padding: "3rem",
+                  fontSize: "16px",
+                  lineHeight: "1.2",
+                }}
+              >
+                {`#include <iostream>
+using namespace std;
+
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+}
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    bubbleSort(arr, n);
+    cout << "Sorted array: ";
+    printArray(arr, n);
+    return 0;
+}
+`}
+              </SyntaxHighlighter>{" "}
+            </pre>
+          </div>
+
+          {/* // */}
+
+          {/* python */}
+
+          <div className=" p-5 flex flex-col gap-5 ">
+            {/* language heading  */}
+            <li className="text-2xl">python</li>
+            <pre className=" w-[80%] flex items-center ">
+              <SyntaxHighlighter
+                language="python"
+                style={vscDarkPlus}
+                customStyle={{
+                  backgroundColor: "black",
+                  height: "100%",
+                  width: "80%",
+                  padding: "3rem",
+                  fontSize: "16px",
+                  lineHeight: "1.2",
+                }}
+              >
+                {`def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        for j in range(n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+def print_array(arr):
+    for i in arr:
+        print(i, end=" ")
+    print()
+
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort(arr)
+print("Sorted array:")
+print_array(arr)
+`}
+              </SyntaxHighlighter>{" "}
+            </pre>
+          </div>
+          {/* //  */}
+
+          {/* java  */}
+
+          <div className=" p-5 flex flex-col gap-5  ">
+            {/* language heading  */}
+            <li className="text-2xl">Java</li>
+            <pre className=" w-[80%] flex items-center ">
+              <SyntaxHighlighter
+                language="python"
+                style={vscDarkPlus}
+                customStyle={{
+                  backgroundColor: "black",
+                  height: "100%",
+                  width: "80%",
+                  padding: "3rem",
+                  fontSize: "16px",
+                  lineHeight: "1.2",
+                }}
+              >
+                {`public class BubbleSort {
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    public static void printArray(int[] arr) {
+        for (int i : arr) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {64, 34, 25, 12, 22, 11, 90};
+        bubbleSort(arr);
+        System.out.println("Sorted array:");
+        printArray(arr);
+    }
+}
+`}
+              </SyntaxHighlighter>{" "}
+            </pre>
+          </div>
+          {/* // */}
+        </div>
       </section>
     </main>
   );
