@@ -6,7 +6,17 @@
   font-family: "digital";
   src: url("src/Fonts/digital-7.ttf");
 }
+@font-face {
+  font-family: "space";
+  src: url("src/Fonts/SpaceMono-Regular.ttf");
+}
 
 .heading {
   font-family: "digital";
+}
+main {
+  font-family: "space";
+}
+.othertxt {
+  font-family: "space";
 }
